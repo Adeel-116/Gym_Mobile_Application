@@ -1,7 +1,7 @@
 const { createCollection } = require('../models/Scheme');
 
-async function insertQuery({username, email, password}) {
-    const data = {username, email, password}
+async function insertQuery({username, email, password, profilePicture}) {
+    const data = {username, email, password, profilePicture}
     try {
         const collection = await createCollection();
         if (!collection) {

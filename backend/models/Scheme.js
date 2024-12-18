@@ -4,7 +4,7 @@ async function createCollection() {
     try {
         const client = await DatabaseConnect();
         const db = client.db("gym_App");
-        const collection =  await db.createCollection("Signup_data20", {
+        const collection =  await db.createCollection("Signup_data39", {
             validator: {
                 $jsonSchema: {
                     bsonType: "object",
@@ -23,13 +23,14 @@ async function createCollection() {
                             minLength: 8,
                             description: "Password must be at least 8 characters long, and contain a number and a special character"
                         },
+                       
                     }
                 }
             }
         });
         await collection.createIndex({ email: 1 }, { unique: true });
         console.log("Collection created successfully");
-        return db.collection("Signup_data20");
+        return db.collection("Signup_data39");
     } catch (error) {
         console.error("Error creating collection:", error);
 

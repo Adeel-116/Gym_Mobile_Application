@@ -19,15 +19,19 @@ function SignUp() {
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [picture, setPicture] = useState(null);
+    
 
+        console.log(picture)
+    
 
     //#region Camera Access 
     async function getAccessCamera() {
-        const hasPermission = await PermissionCamera();
+        const hasPermission = true;
         if (hasPermission) {
-            launchCamera({}, (response) => {
-                if (response.assets) {
-                    setPicture(response.assets[0].uri);
+            launchCamera({ base64: true }, (response) => {
+                if (response.assets && response.assets[0].base64) {
+                    const base64Image = response.assets[0].base64;
+                    setPicture(base64Image);
                 } else {
                     Alert.alert('Error', 'Failed to open camera');
                 }
@@ -38,11 +42,12 @@ function SignUp() {
     }
 
     async function getAccessGallery() {
-        const hasPermission = true;
+        const hasPermission = true; // Add gallery permission check if needed
         if (hasPermission) {
-            launchImageLibrary({}, (response) => {
-                if (response.assets) {
-                    setPicture(response.assets[0].uri);
+            launchImageLibrary({includeBase64: true}, (response) => {
+                if (response.assets && response.assets[0]?.base64) {
+                    const base64Image = `data:image/jpeg;base64,${response.assets[0].base64}`;
+                    setPicture(base64Image);
                 } else {
                     Alert.alert('Error', 'Failed to open gallery');
                 }
@@ -51,6 +56,7 @@ function SignUp() {
             Alert.alert('Permission Denied', 'Gallery permission is required to use this feature.');
         }
     }
+
 
     function Options() {
         Alert.alert(
@@ -96,14 +102,17 @@ function SignUp() {
 
 
     const handleSignIn = async () => {
-        if (name && email && password && confirmPassword) {
-
+        if (name && email && password && confirmPassword && picture) {
             const data = {
                 username: name,
                 email: email,
-                password: password
-            }
-            console.log(name, email, password, confirmPassword);
+                password: password,
+                profilePicture: picture,
+            };
+         
+            console.log("Sending data:", data.profilePicture);
+            console.log("Sending data:", data.username);
+            console.log("Sending data:", data.email);
             try {
                 console.log("try block")
                 const response = await fetch("http://192.168.100.2:5000/Signup", {
